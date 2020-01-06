@@ -17,6 +17,39 @@ export default ({ blocks }) => {
           }
         ]
       },
+      [blocks.list_item_child]: {
+        nodes: [
+          {
+            match: [{ object: "text" }],
+            min: 1,
+            max: 1
+          }
+        ],
+        normalize: (editor, error) => {
+          console.log(`error.code=${error.code}`);
+
+          switch (error.code) {
+            case "child_object_invalid":
+              console.log(`error.child`);
+              console.log(error.child.toJS());
+
+              /*
+              editor.unwrapBlockByKey(error.node.key, {
+                type: 'paragraph',
+              });
+              */
+              console.log(`error.node.key=${error.child.key}`);
+              // editor.removeNodeByKey(error.child.key);
+              editor.unwrapNodeByKey(error.child.key);
+
+              // editor.unwrapBlockByKey(error.child.key, 'paragraph');
+              // editor.unwrapNodeByKey(error.child.key);
+
+              console.log(editor.value.toJS());
+              return;
+          }
+        }
+      },
       [blocks.list_item]: {
         parent: [
           { type: blocks.unordered_list },
